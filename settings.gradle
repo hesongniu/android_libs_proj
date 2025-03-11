@@ -21,3 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "android_libs_proj"
 include ':app'
+include ':google-admob'
+include ':google-games'
+include ':google-iap'
+include ':tool-logcat'
