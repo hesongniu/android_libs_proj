@@ -1,0 +1,11 @@
+//统一配置库文件命名
+android {
+        libraryVariants.all { variant ->
+            def buildType = variant.buildType.name
+            def versionName = defaultConfig.versionName
+            variant.outputs.all { output ->
+                def newFileName = "${project.name}-${buildType}-v${versionName}.aar"
+                output.outputFileName = newFileName
+            }
+        }
+}
