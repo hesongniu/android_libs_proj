@@ -1,13 +1,14 @@
 package uin.gnoseh.lib.google_games;
 
 import android.app.Activity;
-import android.content.Context;
 
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.games.GamesSignInClient;
 import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.games.PlayGamesSdk;
+
+import java.util.Objects;
 
 /**
  * 登录流程：<br>
@@ -18,6 +19,10 @@ import com.google.android.gms.games.PlayGamesSdk;
 public class GamesSdk {
 
     /**
+     * 游戏中通常只有一个常驻activity，记录此变量不用每次获取
+     */
+    private static Activity gameActivity = null;
+    /**
      * 登录状态
      */
     private static boolean isAuthenticated = false;
@@ -26,22 +31,27 @@ public class GamesSdk {
      */
     private static String currPlayerId = null;
 
-    public static void init(@NonNull Context context) {
-        PlayGamesSdk.initialize(context);
+    public static void init(@NonNull Activity activity) {
+        gameActivity = activity;
+        PlayGamesSdk.initialize(gameActivity);
     }
 
     /**
      * 检查登录状态，传入回调操作
      */
-    public static void checkAuthenticate(@NonNull Activity activity, Callback callback) {
-        GamesSignInClient gamesSignInClient = PlayGames.getGamesSignInClient(activity);
+    public static void checkAuthenticate(Callback callback) {
+        if (Objects.isNull(gameActivity)) {
+            callback.onFailed(new Exception("gameActivity is null"));
+            return;
+        }
+        GamesSignInClient gamesSignInClient = PlayGames.getGamesSignInClient(gameActivity);
         gamesSignInClient.isAuthenticated().addOnCompleteListener(isAuthenticatedTask -> {
             isAuthenticated =
                     (isAuthenticatedTask.isSuccessful() &&
                             isAuthenticatedTask.getResult().isAuthenticated());
             if (isAuthenticated) {
                 //登录成功就应该可以回传playerId，否则认为没登录成功
-                PlayGames.getPlayersClient(activity).getCurrentPlayer().addOnCompleteListener(mTask -> {
+                PlayGames.getPlayersClient(gameActivity).getCurrentPlayer().addOnCompleteListener(mTask -> {
                             currPlayerId = mTask.getResult().getPlayerId();
                             callback.onSuccess(currPlayerId);
                         }
@@ -56,9 +66,11 @@ public class GamesSdk {
     /**
      * 在发现未登录成功时，需要执行手动登录
      */
-    public static void signIn(@NonNull Activity activity) {
-        GamesSignInClient gamesSignInClient = PlayGames.getGamesSignInClient(activity);
-        gamesSignInClient.signIn();
+    public static void signIn() {
+        if (Objects.nonNull(gameActivity)) {
+            GamesSignInClient gamesSignInClient = PlayGames.getGamesSignInClient(gameActivity);
+            gamesSignInClient.signIn();
+        }
     }
 
 }
