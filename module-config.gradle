@@ -1,11 +1,54 @@
 //统一配置库文件命名
 android {
-        libraryVariants.all { variant ->
-            def buildType = variant.buildType.name
-            def versionName = defaultConfig.versionName
-            variant.outputs.all { output ->
-                def newFileName = "${project.name}-${buildType}-v${versionName}.aar"
-                output.outputFileName = newFileName
+    libraryVariants.all { variant ->
+        //def buildType = variant.buildType.name
+        def versionName = defaultConfig.versionName
+        variant.outputs.all { output ->
+            def newFileName = "${project.name}-${versionName}.aar"
+            output.outputFileName = newFileName
+        }
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'uin.gnoseh.android-lib' // 替换为你的groupId
+            artifactId = "${project.name}" // 替换为你的artifactId
+            version = "1.0.0"
+            artifact("$buildDir/outputs/aar/${project.name}-${version}.aar")
+
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+
+                // 添加 implementation 依赖
+                configurations.implementation.allDependencies.each { dependency ->
+                    if (dependency.group && dependency.name && dependency.version) {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', dependency.group)
+                        dependencyNode.appendNode('artifactId', dependency.name)
+                        dependencyNode.appendNode('version', dependency.version)
+                        dependencyNode.appendNode('scope', 'runtime')
+                    }
+                }
+
+                // 添加 api 依赖
+                configurations.api.allDependencies.each { dependency ->
+                    if (dependency.group && dependency.name && dependency.version) {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', dependency.group)
+                        dependencyNode.appendNode('artifactId', dependency.name)
+                        dependencyNode.appendNode('version', dependency.version)
+                        dependencyNode.appendNode('scope', 'compile')
+                    }
+                }
             }
         }
+    }
+
+    repositories {
+        maven {
+            url = uri('/Users/niuhesong/Maven/Repo') // 本地Maven仓库路径
+        }
+    }
 }
