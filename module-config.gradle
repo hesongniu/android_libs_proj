@@ -13,7 +13,7 @@ android {
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId = 'uin.gnoseh.android-lib' // 替换为你的groupId
+            groupId = 'uin.gnoseh.android-libs' // 替换为你的groupId
             artifactId = "${project.name}" // 替换为你的artifactId
             version = "1.0.0"
             artifact("$buildDir/outputs/aar/${project.name}-${version}.aar")
