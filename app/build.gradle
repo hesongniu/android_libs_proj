@@ -4,11 +4,11 @@ plugins {
 
 android {
     namespace 'uin.gnoseh.android_libs_proj'
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId "uin.gnoseh.android_libs_proj"
-        minSdk 24
+        minSdk 21
         targetSdk 35
         versionCode 1
         versionName "1.0"

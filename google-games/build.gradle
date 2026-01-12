@@ -7,10 +7,10 @@ apply from: '../module-config.gradle'
 
 android {
     namespace 'uin.gnoseh.lib.google_games'
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
-        minSdk 24
+        minSdk 21
         versionName "1.0.0"
         consumerProguardFiles "consumer-rules.pro"
     }
