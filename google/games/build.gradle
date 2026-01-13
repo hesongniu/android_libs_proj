@@ -6,7 +6,7 @@ plugins {
 apply from: '../../module-config.gradle'
 
 android {
-    namespace 'uin.gnoseh.libs.google.iap'
+    namespace 'uin.gnoseh.libs.google.games'
     compileSdk 36
 
     defaultConfig {
