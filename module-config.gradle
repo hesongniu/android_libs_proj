@@ -3,9 +3,10 @@ android {
     libraryVariants.all { variant ->
         //def buildType = variant.buildType.name
         def versionName = defaultConfig.versionName
+        //println "-------parentModuleName:${parentModuleName}-------"
+        //println "prop:${project.ext.properties}"
         variant.outputs.all { output ->
-            def newFileName = "${project.name}-${versionName}.aar"
-            output.outputFileName = newFileName
+            output.outputFileName = "${project.name}-${versionName}.aar"
         }
     }
 }
@@ -13,11 +14,10 @@ android {
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId = 'uin.gnoseh.android-libs' // 替换为你的groupId
+            groupId = "uin.gnoseh.${project.group}" // 替换为你的groupId
             artifactId = "${project.name}" // 替换为你的artifactId
             version = "1.0.0"
             artifact("$buildDir/outputs/aar/${project.name}-${version}.aar")
-
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
 
