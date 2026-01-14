@@ -61,7 +61,7 @@ public class LoginUtil {
                 ).addOnFailureListener(e -> callback.onFailed(e));
             } else {
                 //没登录成功就需要显示图标走手动登录流程
-                callback.onFailed(null);
+                callback.onFailed(new Exception("Authenticated is unsuccessful"));
             }
         }).addOnFailureListener(e -> callback.onFailed(e));
     }
